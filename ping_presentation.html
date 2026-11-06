@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПИНГ — бизнес-план</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Rubik+Mono+One&family=Press+Start+2P&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #070707;
+    --red: #ff1f3d;
+    --gold: #ffd400;
+    --cyan: #00f0ff;
+    --white: #f5f5f5;
+    --gray: #8a8a8a;
+    --card: rgba(255,255,255,0.05);
+    --line: rgba(255,255,255,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Manrope', sans-serif; font-size: 18px; line-height: 1.45;
+  }
+
+  /* grain + vignette */
+  body::before {
+    content: ""; position: fixed; inset: -50%; z-index: 50; pointer-events: none; opacity: .07;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation: grain 1s steps(6) infinite;
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 49; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.75) 100%);
+  }
+  @keyframes grain { 0%{transform:translate(0,0)} 25%{transform:translate(-5%,3%)} 50%{transform:translate(4%,-4%)} 75%{transform:translate(-3%,-2%)} 100%{transform:translate(2%,5%)} }
+
+  /* slides */
+  .deck { position: fixed; inset: 0; }
+  .slide {
+    position: absolute; inset: 0; padding: 70px 7vw 90px;
+    display: flex; flex-direction: column; justify-content: center;
+    opacity: 0; visibility: hidden; overflow-y: auto;
+  }
+  .slide.active { opacity: 1; visibility: visible; animation: enter .75s cubic-bezier(.2,.9,.2,1); }
+  .slide.active .shake { animation: shake .45s .1s; }
+  @keyframes enter {
+    0% { opacity: 0; transform: scale(1.18); filter: blur(14px) contrast(2); }
+    60% { opacity: 1; transform: scale(.985); filter: blur(0) contrast(1.2); }
+    100% { transform: scale(1); filter: none; }
+  }
+  @keyframes shake {
+    0%,100% { transform: translate(0,0) } 20% { transform: translate(-8px,4px) } 40% { transform: translate(7px,-5px) }
+    60% { transform: translate(-5px,-3px) } 80% { transform: translate(4px,5px) }
+  }
+  .flash { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 60; }
+  .flash.go { animation: flash .35s ease-out; }
+  @keyframes flash { 0% { opacity: .28 } 100% { opacity: 0 } }
+
+  /* type */
+  .tag {
+    font-family: 'Press Start 2P', monospace; font-size: 11px; letter-spacing: 1px;
+    color: var(--gold); margin-bottom: 18px; text-transform: uppercase;
+  }
+  h1, h2 { font-family: 'Unbounded', sans-serif; font-weight: 900; line-height: 1.02; text-transform: uppercase; }
+  h2 { font-size: clamp(30px, 4.6vw, 60px); margin-bottom: 26px; }
+  .glitch { position: relative; text-shadow: 3px 0 var(--red), -3px 0 var(--cyan); }
+  .slide.active .glitch { animation: glitch 2.6s infinite; }
+  @keyframes glitch {
+    0%, 90%, 100% { text-shadow: 3px 0 var(--red), -3px 0 var(--cyan); transform: none; }
+    92% { text-shadow: -6px 2px var(--red), 6px -2px var(--cyan); transform: skewX(-6deg); }
+    94% { text-shadow: 6px -1px var(--red), -6px 1px var(--cyan); transform: skewX(4deg) translateX(4px); }
+    96% { text-shadow: 3px 0 var(--red), -3px 0 var(--cyan); transform: none; }
+  }
+  .red { color: var(--red); } .gold { color: var(--gold); } .cyan { color: var(--cyan); } .gray { color: var(--gray); }
+  .mono { font-family: 'Rubik Mono One', sans-serif; }
+  .small { font-size: 14px; color: var(--gray); }
+  p { margin-bottom: 12px; }
+
+  /* layout bits */
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px;
+    backdrop-filter: blur(4px);
+  }
+  .card h3 { font-family: 'Unbounded', sans-serif; font-size: 18px; margin-bottom: 8px; }
+  .card ul { margin-left: 18px; } .card li { margin-bottom: 4px; }
+  .big { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: clamp(28px, 3.4vw, 46px); line-height: 1; margin-bottom: 6px; }
+  .pill {
+    display: inline-block; padding: 6px 14px; border-radius: 99px; border: 1px solid var(--line);
+    font-size: 14px; margin: 0 8px 8px 0; background: var(--card);
+  }
+  .pill.r { border-color: var(--red); color: var(--red); }
+  .pill.g { border-color: var(--gold); color: var(--gold); }
+  .pill.c { border-color: var(--cyan); color: var(--cyan); }
+  .chart-box { position: relative; height: 340px; width: 100%; }
+  .flow { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+  .flow .card { flex: 1 1 150px; position: relative; }
+  .flow .n { font-family: 'Press Start 2P', monospace; color: var(--red); font-size: 14px; margin-bottom: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 16px; }
+  td, th { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { color: var(--gold); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* title slide */
+  .title-ping { font-size: clamp(90px, 20vw, 280px); letter-spacing: -4px; }
+  .sub { font-family: 'Unbounded', sans-serif; font-size: clamp(16px, 2vw, 26px); margin-top: 10px; }
+
+  /* versus */
+  .vs { font-family: 'Rubik Mono One'; font-size: 54px; color: var(--red); text-align: center; align-self: center; }
+
+  /* final stamp */
+  .stamp {
+    font-family: 'Rubik Mono One', sans-serif; font-size: clamp(34px, 6vw, 84px); color: var(--red);
+    border: 8px solid var(--red); padding: 18px 30px; display: inline-block; transform: rotate(-6deg);
+    text-align: center; line-height: 1.05; box-shadow: 0 0 60px rgba(255,31,61,.35);
+  }
+  .slide.active .stamp { animation: stamp .7s .3s both cubic-bezier(.3,1.6,.5,1); }
+  @keyframes stamp { 0% { transform: rotate(-6deg) scale(3); opacity: 0 } 100% { transform: rotate(-6deg) scale(1); opacity: 1 } }
+
+  /* HUD */
+  .hud { position: fixed; top: 18px; left: 7vw; right: 7vw; display: flex; justify-content: space-between; z-index: 40; font-family: 'Press Start 2P'; font-size: 10px; color: var(--gray); }
+  .rating { color: var(--gold); }
+  .progress { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, var(--red), var(--gold)); z-index: 41; transition: width .4s; }
+  .marquee { position: fixed; bottom: 0; left: 0; right: 0; height: 34px; background: var(--red); color: #000; overflow: hidden; z-index: 40; display: flex; align-items: center; }
+  .marquee span { white-space: nowrap; font-family: 'Rubik Mono One'; font-size: 14px; animation: marq 22s linear infinite; padding-left: 100%; }
+  @keyframes marq { to { transform: translateX(-100%); } }
+  .nav { position: fixed; bottom: 48px; right: 7vw; z-index: 42; display: flex; gap: 8px; }
+  .nav button {
+    background: var(--card); color: var(--white); border: 1px solid var(--line); border-radius: 12px;
+    width: 46px; height: 46px; font-size: 20px; cursor: pointer;
+  }
+  .nav button:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* aura toast */
+  .toast {
+    position: fixed; top: 46px; right: 7vw; z-index: 70; pointer-events: none;
+    background: var(--red); color: #fff; border: 3px solid var(--gold);
+    font-family: 'Rubik Mono One'; font-size: 16px; padding: 12px 18px; border-radius: 6px;
+    opacity: 0; transform: translateY(-20px) scale(.9);
+  }
+  .toast.minus { background: #222; border-color: var(--red); color: var(--red); }
+  .toast.show { animation: toast 1.8s ease-out; }
+  @keyframes toast {
+    0% { opacity: 0; transform: translateY(-20px) scale(.9) }
+    12% { opacity: 1; transform: translateY(0) scale(1.08) }
+    20% { transform: scale(1) }
+    80% { opacity: 1 }
+    100% { opacity: 0; transform: translateY(-10px) }
+  }
+
+  @media (max-width: 800px) {
+    body { font-size: 15px; }
+    .slide { padding: 60px 16px 100px; justify-content: flex-start; }
+    .g2, .g3, .g4 { grid-template-columns: 1fr; }
+    .chart-box { height: 260px; }
+    .vs { font-size: 30px; }
+    .hud { left: 16px; right: 16px; }
+    .nav { right: 16px; }
+    .toast { right: 16px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="hud"><span>ПИНГ // БИЗНЕС-ПЛАН</span><span class="rating">AURA: <span id="rating">0</span></span></div>
+<div class="flash" id="flash"></div>
+<div class="toast" id="toast">+15 AURA</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 TITLE -->
+  <section class="slide">
+    <div class="tag">бизнес-план // основы менеджмента</div>
+    <h1 class="title-ping glitch shake">ПИНГ</h1>
+    <div class="sub">IT-отдел по подписке для малого бизнеса</div>
+    <p class="gray" style="margin-top:14px">Нижний Новгород · <span class="gold">мы на связи раньше, чем всё сломалось</span></p>
+    <p class="small" style="margin-top:30px">→ листать стрелками, пробелом или свайпом</p>
+  </section>
+
+  <!-- 2 CONTENTS -->
+  <section class="slide">
+    <div class="tag">лор</div>
+    <h2 class="glitch">Что будет дальше</h2>
+    <div class="grid g4">
+      <div class="card"><div class="n mono red">01</div>Резюме проекта</div>
+      <div class="card"><div class="n mono red">02</div>Компания и цели</div>
+      <div class="card"><div class="n mono red">03</div>Услуги и цены</div>
+      <div class="card"><div class="n mono red">04</div>Рынок и SWOT</div>
+      <div class="card"><div class="n mono red">05</div>Маркетинг</div>
+      <div class="card"><div class="n mono red">06</div>Операционный план</div>
+      <div class="card"><div class="n mono red">07</div>Команда</div>
+      <div class="card"><div class="n mono red">08</div>Финансы</div>
+      <div class="card"><div class="n mono red">09</div>Риски</div>
+      <div class="card"><div class="n mono red">10</div>Финал 🗿</div>
+    </div>
+  </section>
+
+  <!-- 3 SUMMARY -->
+  <section class="slide">
+    <div class="tag">01 // резюме проекта</div>
+    <h2 class="glitch">Коротко, для тех, кто спешит</h2>
+    <p style="max-width:900px">Обслуживаем офисы малых компаний и склады селлеров маркетплейсов по <b class="gold">безлимитной подписке</b>: всё, что сломалось, — наша задача. Свободные специалисты закрывают заказы частных клиентов.</p>
+    <div class="grid g4" style="margin-top:14px">
+      <div class="card"><div class="big gold">950K ₽</div><div class="gray">стартовые вложения</div></div>
+      <div class="card"><div class="big">1,12M ₽</div><div class="gray">выручка в месяц на 2-й год</div></div>
+      <div class="card"><div class="big red">200K ₽</div><div class="gray">прибыль в месяц до налога</div></div>
+      <div class="card"><div class="big cyan">1,5–2 года</div><div class="gray">окупаемость</div></div>
+    </div>
+  </section>
+
+  <!-- 4 PROBLEM -->
+  <section class="slide">
+    <div class="tag">02 // проблема</div>
+    <h2 class="glitch shake">POV: день сдачи отчётности, а принтер умер</h2>
+    <div class="grid g3">
+      <div class="card"><h3 class="red">💸 Штат — дорого</h3>Сисадмин в штате — это зарплата, взносы, отпуска и больничные. Для офиса на 10 человек это слишком.</div>
+      <div class="card"><h3 class="red">🤹 Один в поле не воин</h3>Один «универсал» не закрывает всё сразу: сеть, оргтехнику, 1С, автоматизацию.</div>
+      <div class="card"><h3 class="red">👻 Фрилансер пропал</h3>Нет договора, нет гарантий, нет замены. Трубку не берёт — и всё.</div>
+    </div>
+  </section>
+
+  <!-- 5 SOLUTION -->
+  <section class="slide">
+    <div class="tag">02 // решение</div>
+    <h2 class="glitch">Один платёж — весь IT закрыт</h2>
+    <p class="gray">Под задачу выезжает нужный специалист. Каждый в команде — универсал со своим профилем.</p>
+    <div class="grid g3" style="margin-top:10px">
+      <div class="card"><h3 class="cyan">🖥 Сисадмин</h3>Компьютеры, серверы, сеть, Wi-Fi, резервные копии</div>
+      <div class="card"><h3 class="gold">🖨 Инженер по оргтехнике</h3>Принтеры, МФУ, принтеры этикеток, сканеры</div>
+      <div class="card"><h3 class="red">⚙️ Автоматизатор</h3>Мелкие доработки 1С и CRM, скрипты для рутины</div>
+    </div>
+    <p style="margin-top:18px"><span class="pill g">Миссия</span> дать малому бизнесу надёжный IT-отдел, чтобы он занимался своим делом, а не техникой.</p>
+  </section>
+
+  <!-- 6 VERSUS -->
+  <section class="slide">
+    <div class="tag">02 // npc vs main character</div>
+    <h2 class="glitch">Сисадмин в штате vs ПИНГ</h2>
+    <div class="grid g2">
+      <div>
+        <div class="chart-box"><canvas id="chartVs"></canvas></div>
+      </div>
+      <div class="card">
+        <table>
+          <tr><th></th><th>Штат</th><th>ПИНГ</th></tr>
+          <tr><td>Стоимость в месяц*</td><td class="red">~140 тыс. ₽</td><td class="gold">15 тыс. ₽</td></tr>
+          <tr><td>Отпуска и больничные</td><td>😵 платите вы</td><td>✅ не ваша проблема</td></tr>
+          <tr><td>Специалистов</td><td>1</td><td>вся команда</td></tr>
+          <tr><td>Найм и увольнение</td><td>на вас</td><td>на нас</td></tr>
+        </table>
+        <p class="small" style="margin-top:10px">* офис на 10 рабочих мест; штат — зарплата ~90 тыс. на руки с НДФЛ, взносами и рабочим местом</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 UNLIMITED -->
+  <section class="slide">
+    <div class="tag">03 // услуги</div>
+    <h2 class="glitch">Безлимит. Без звёздочек*</h2>
+    <div class="grid g2">
+      <div class="card"><h3 class="gold">✅ Входит</h3>
+        <ul><li>Ремонт и настройка ПК, сети, оргтехники</li><li>Удалённая поддержка без ограничений</li><li>Выезды без ограничений</li><li>Резервное копирование и мониторинг</li><li>Поддержка 1С и CRM</li></ul></div>
+      <div class="card"><h3 class="red">💰 Отдельно</h3>
+        <ul><li>Запчасти и новая техника</li><li>Новые проекты: переезд, новая сеть</li><li>Крупные доработки 1С и CRM</li></ul>
+        <p class="small" style="margin-top:8px">*ладно, одна звёздочка всё-таки есть</p></div>
+    </div>
+    <div style="margin-top:18px">
+      <span class="pill c">⚡ удалённо — до 30 минут</span>
+      <span class="pill g">🚗 выезд — до 4 часов</span>
+      <span class="pill r">🔥 критично — до 2 часов</span>
+    </div>
+  </section>
+
+  <!-- 8 PRICES -->
+  <section class="slide">
+    <div class="tag">03 // цены</div>
+    <h2 class="glitch">Прайс без кринжа</h2>
+    <div class="grid g3">
+      <div class="card"><div class="big gold">1 500 ₽</div>за рабочее место в месяц, безлимит</div>
+      <div class="card"><div class="big">8 000 ₽</div>минимальный договор в месяц</div>
+      <div class="card"><div class="big">1–1,5K ₽</div>подключение: аудит и наведение порядка, за ПК</div>
+      <div class="card"><div class="big cyan">1,5–2,5K ₽</div>час автоматизации сверх подписки</div>
+      <div class="card"><div class="big red">2,5–3K ₽</div>средний чек частного клиента</div>
+      <div class="card"><div class="big">🗿</div>цена фиксирована — никаких сюрпризов в счёте</div>
+    </div>
+  </section>
+
+  <!-- 9 AUDIENCE -->
+  <section class="slide">
+    <div class="tag">04 // целевая аудитория</div>
+    <h2 class="glitch">Кому мы нужны</h2>
+    <div class="grid g3">
+      <div class="card"><h3 class="cyan">🏢 Офисы на 5–30 мест</h3>
+        <ul><li>Бухгалтерские, юридические, консалтинговые фирмы</li><li>Агентства недвижимости, страховые, кадровые</li><li>Проектные и архитектурные бюро</li><li>Оптовые и логистические компании</li></ul></div>
+      <div class="card" style="border-color:var(--gold)"><h3 class="gold">📦 Селлеры маркетплейсов — main quest</h3>
+        <ul><li>Склад с ПК, принтерами этикеток, сканерами</li><li>Простой = потерянные заказы</li><li>Скрипты для выгрузок и остатков</li><li>Растут быстро, своего айтишника нет</li></ul></div>
+      <div class="card"><h3 class="red">🎮 Частные лица — side quest</h3>
+        <ul><li>Геймеры: сборка, апгрейд, чистка</li><li>Студенты и удалёнщики</li><li>Пожилые люди</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 10 MARKET -->
+  <section class="slide">
+    <div class="tag">04 // рынок</div>
+    <h2 class="glitch">Рынок и конкуренты</h2>
+    <div class="grid g2">
+      <div>
+        <div class="chart-box"><canvas id="chartComp"></canvas></div>
+        <p class="small">Цена за рабочее место в месяц, ₽ (средняя по тарифам). Источники: сайты компаний</p>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px"><h3 class="gold">Спрос</h3>
+          <ul><li>В России 6,6+ млн субъектов малого и среднего бизнеса</li><li>Большинству невыгоден штатный сисадмин</li><li>Селлеров и складов становится больше</li><li>Маркировка, кассы и отечественное ПО добавляют задач</li></ul></div>
+        <div class="card"><h3 class="red">Наша позиция</h3>Не самые дешёвые — самые вменяемые. Надёжнее фрилансеров, гибче крупных компаний, отдельный фокус на селлерах.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 SWOT -->
+  <section class="slide">
+    <div class="tag">04 // swot</div>
+    <h2 class="glitch">Green flags / Red flags</h2>
+    <div class="grid g2">
+      <div class="card"><h3 class="gold">💪 Сильные стороны</h3><ul><li>Безлимит — понятное предложение</li><li>Гибкая команда универсалов</li><li>Два источника дохода</li></ul></div>
+      <div class="card"><h3 class="red">🚩 Слабые стороны</h3><ul><li>Нет репутации на старте</li><li>Небольшая команда</li><li>Мало стартового капитала</li></ul></div>
+      <div class="card"><h3 class="cyan">🚀 Возможности</h3><ul><li>Рост числа селлеров</li><li>Переход на отечественное ПО</li><li>Бизнес экономит на штате</li></ul></div>
+      <div class="card"><h3 class="red">☠️ Угрозы</h3><ul><li>Сильные конкуренты</li><li>Рост налоговой нагрузки</li><li>Уход клиентов в кризис</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 12 MARKETING -->
+  <section class="slide">
+    <div class="tag">05 // маркетинговый план</div>
+    <h2 class="glitch">Как нас найдут</h2>
+    <div class="grid g2">
+      <div class="card"><h3 class="gold">🏢 Компании</h3>
+        <ul><li>Бесплатный IT-аудит офиса — первый шаг к договору</li><li>Обход бизнес-центров города</li><li>Партнёрство с бухгалтерскими фирмами: они советуют нас клиентам</li><li>Чаты и сообщества селлеров</li><li>Контекстная реклама в Яндексе</li></ul></div>
+      <div class="card"><h3 class="cyan">🙋 Частные клиенты</h3>
+        <ul><li>Авито</li><li>Яндекс Карты и 2ГИС</li><li>Соцсети и короткие видео</li><li>Сарафанное радио</li></ul></div>
+    </div>
+    <p style="margin-top:16px"><span class="pill g">бюджет</span> ~50 тыс. ₽ на старте · ~60 тыс. ₽ в месяц на этапе 2</p>
+  </section>
+
+  <!-- 13 OPERATIONS -->
+  <section class="slide">
+    <div class="tag">06 // операционный план</div>
+    <h2 class="glitch">Путь заявки: speedrun</h2>
+    <div class="flow">
+      <div class="card"><div class="n">01</div>Клиент пишет: телефон, Telegram, сайт</div>
+      <div class="card"><div class="n">02</div>Диспетчер оценивает срочность</div>
+      <div class="card"><div class="n">03</div>Назначается свободный специалист с нужным профилем</div>
+      <div class="card"><div class="n">04</div>Решаем удалённо или выезжаем</div>
+      <div class="card"><div class="n">05</div>Закрываем заявку, клиент получает отчёт</div>
+    </div>
+    <p style="margin-top:18px">Нет заявок по подпискам? Специалист берёт частный заказ. <b class="gold">Простоев нет.</b></p>
+    <div><span class="pill">⏱ время реакции</span><span class="pill">🌐 доля удалённых решений</span><span class="pill">📊 загрузка инженеров</span><span class="pill">📉 отток клиентов</span></div>
+  </section>
+
+  <!-- 14 TEAM -->
+  <section class="slide">
+    <div class="tag">07 // организационный план</div>
+    <h2 class="glitch">Команда: level up</h2>
+    <p>Опытные мастера — наставники. Студенты технических вузов и колледжей качаются на реальных заявках.</p>
+    <div class="grid g4" style="margin-top:10px">
+      <div class="card"><div class="tag" style="margin-bottom:8px">lvl 1</div><h3>Стажёр</h3><div class="big" style="font-size:24px">35–45K</div><span class="small">неполный день</span></div>
+      <div class="card"><div class="tag" style="margin-bottom:8px">lvl 2</div><h3>Инженер</h3><div class="big" style="font-size:24px">70–85K</div></div>
+      <div class="card"><div class="tag" style="margin-bottom:8px">lvl 3</div><h3>Старший инженер</h3><div class="big gold" style="font-size:24px">90–110K</div></div>
+      <div class="card"><div class="tag" style="margin-bottom:8px">boss</div><h3>Основатели</h3><div class="big red" style="font-size:24px">50–60K</div><span class="small">+ доля прибыли</span></div>
+    </div>
+    <p class="small" style="margin-top:12px">Зарплаты на руки в месяц. Плюс бонусы за частные заказы и привлечённые компании.</p>
+  </section>
+
+  <!-- 15 STAGES -->
+  <section class="slide">
+    <div class="tag">07 // этапы развития</div>
+    <h2 class="glitch">Roadmap</h2>
+    <div class="grid g2">
+      <div>
+        <div class="card" style="margin-bottom:12px"><h3 class="cyan">Этап 1 · 0–6 мес · Мастерская</h3>3 основателя, частные заказы, первые 5 компаний</div>
+        <div class="card" style="margin-bottom:12px"><h3 class="gold">Этап 2 · 6–24 мес · Команда</h3>ООО, офис-мастерская 30–40 м², 7 человек, 40 компаний</div>
+        <div class="card"><h3 class="red">Этап 3 · 2–4 года · Сервисная компания</h3>12–15 человек, 100+ компаний, отделы сервиса, продаж и автоматизации</div>
+      </div>
+      <div class="chart-box"><canvas id="chartClients"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 16 INVEST -->
+  <section class="slide">
+    <div class="tag">08 // финансовый план</div>
+    <h2 class="glitch">Стартовые вложения</h2>
+    <div class="grid g2">
+      <div class="chart-box"><canvas id="chartInvest"></canvas></div>
+      <div class="card">
+        <table>
+          <tr><th>Статья</th><th>₽</th></tr>
+          <tr><td>Инструменты и оборудование</td><td>120K</td></tr>
+          <tr><td>Ноутбук для диагностики, ПО</td><td>70K</td></tr>
+          <tr><td>Запас запчастей</td><td>60K</td></tr>
+          <tr><td>Реклама и сайт</td><td>50K</td></tr>
+          <tr><td>Регистрация, счёт, касса</td><td>20K</td></tr>
+          <tr><td>Помещение, мебель, оборудование (этап 2)</td><td>250K</td></tr>
+          <tr><td>Резерв на 2–3 месяца (этап 2)</td><td>380K</td></tr>
+          <tr><td><b class="gold">Итого</b></td><td><b class="gold">~950K</b></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 P&L -->
+  <section class="slide">
+    <div class="tag">08 // доходы и расходы</div>
+    <h2 class="glitch">Stonks 📈</h2>
+    <div class="grid g2">
+      <div>
+        <div class="chart-box"><canvas id="chartGrowth"></canvas></div>
+        <p class="small">Выручка и расходы по месяцам, тыс. ₽ (прогноз)</p>
+      </div>
+      <div>
+        <div class="chart-box" style="height:260px"><canvas id="chartCost"></canvas></div>
+        <p style="margin-top:10px">Месяц 24: выручка <b>~1,12 млн</b> · расходы <b>~900 тыс.</b> · прибыль <b class="gold">~200 тыс. ₽</b></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 UNIT + TAX -->
+  <section class="slide">
+    <div class="tag">08 // экономика и налоги</div>
+    <h2 class="glitch">Почему безлимит — это база</h2>
+    <div class="grid g2">
+      <div class="card"><h3 class="gold">Один клиент: офис на 10 мест</h3>
+        <table>
+          <tr><td>Выручка</td><td>15 000 ₽/мес</td></tr>
+          <tr><td>Работа после наведения порядка</td><td>~10 ч/мес</td></tr>
+          <tr><td>Себестоимость часа</td><td>~900–1 000 ₽</td></tr>
+          <tr><td><b>Прибыль</b></td><td><b class="gold">~5–6 тыс. ₽/мес</b></td></tr>
+        </table>
+        <p class="small" style="margin-top:8px">Порядок = меньше поломок. Большинство задач решается удалённо. Мониторинг ловит проблемы заранее.</p>
+      </div>
+      <div class="card"><h3 class="cyan">Налоги и окупаемость</h3>
+        <ul><li>ООО на упрощённой системе</li><li>Без НДС при выручке до 20 млн ₽/год (2026–2028)</li><li>Страховые взносы ~30% от зарплат</li><li>Точка безубыточности: ~32 компании</li><li>Окупаемость: <b class="gold">1,5–2 года</b></li></ul></div>
+    </div>
+  </section>
+
+  <!-- 19 RISKS -->
+  <section class="slide" data-minus="1">
+    <div class="tag">09 // анализ рисков</div>
+    <h2 class="glitch shake">Что может пойти не так</h2>
+    <div class="card">
+      <table>
+        <tr><th>Риск 🚩</th><th>Решение ✅</th></tr>
+        <tr><td>Сильная конкуренция</td><td>Быстрая реакция, личный инженер, фокус на селлерах</td></tr>
+        <tr><td>Уход опытных сотрудников</td><td>Бонусы, доля в прибыли, растим своих из стажёров</td></tr>
+        <tr><td>Уход клиента</td><td>Много небольших клиентов, ни один не даёт больше 10% выручки</td></tr>
+        <tr><td>Потеря данных клиента</td><td>Резервные копии, чёткая зона ответственности в договоре</td></tr>
+        <tr><td>Неравномерная загрузка</td><td>Частные заказы заполняют простои</td></tr>
+        <tr><td>Рост налогов</td><td>Запас прибыли в ценах, работа с бухгалтером</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 20 FINAL -->
+  <section class="slide" data-final="1" style="align-items:center; text-align:center">
+    <div class="tag">10 // заключение</div>
+    <div class="stamp">ИНВЕСТОРЫ<br>ДОВОЛЬНЫ<br>ТОБОЙ</div>
+    <p style="margin-top:40px; max-width:760px">Понятная услуга · стабильный доход от подписок · команда без простоев · рост от мастерской до сервисной компании · окупаемость 1,5–2 года</p>
+    <h2 class="glitch" style="margin-top:16px; font-size:clamp(36px,6vw,80px)">ПИНГ</h2>
+    <p class="gold">мы на связи раньше, чем всё сломалось</p>
+    <p class="small" style="margin-top:20px">Вопросы? 🗿</p>
+  </section>
+
+</div>
+
+<div class="nav"><button id="prev" aria-label="Назад">←</button><button id="next" aria-label="Вперёд">→</button></div>
+<div class="marquee"><span>ПИНГ • БЕЗ ЛАГОВ • ЭТО БАЗА • БЕЗЛИМИТ • W • STONKS 📈 • IT-ОТДЕЛ ПО ПОДПИСКЕ • НИЖНИЙ НОВГОРОД • ИНВЕСТОРЫ ДОВОЛЬНЫ • ПИНГ • БЕЗ ЛАГОВ • ЭТО БАЗА • БЕЗЛИМИТ • W • STONKS 📈 •</span></div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var idx = 0, rating = 0, maxSeen = 0;
+  var ratingEl = document.getElementById('rating');
+  var toast = document.getElementById('toast');
+  var flash = document.getElementById('flash');
+  var progress = document.getElementById('progress');
+  var built = {};
+
+  function showToast(text, minus) {
+    toast.textContent = text;
+    toast.className = 'toast' + (minus ? ' minus' : '');
+    void toast.offsetWidth;
+    toast.className += ' show';
+  }
+
+  function go(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[idx].classList.remove('active');
+    idx = n;
+    var s = slides[idx];
+    void s.offsetWidth;
+    s.classList.add('active');
+    s.scrollTop = 0;
+    flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
+    progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+
+    if (idx > maxSeen) {
+      maxSeen = idx;
+      if (s.dataset.final) { rating += 1000; showToast('+1000 AURA'); }
+      else if (s.dataset.minus) {
+        rating -= 50; showToast('−50 AURA… РИСКИ?!', true);
+        setTimeout(function () { rating += 100; ratingEl.textContent = rating; showToast('+100 AURA: У НАС ЕСТЬ РЕШЕНИЯ'); }, 1900);
+      } else { var v = [15, 15, 30, 50][Math.floor(Math.random() * 4)]; rating += v; showToast('+' + v + ' AURA'); }
+      ratingEl.textContent = rating;
+    }
+    buildCharts(s);
+  }
+
+  document.getElementById('next').onclick = function () { go(idx + 1); };
+  document.getElementById('prev').onclick = function () { go(idx - 1); };
+  document.addEventListener('keydown', function (e) {
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].indexOf(e.key) > -1) { e.preventDefault(); go(idx + 1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].indexOf(e.key) > -1) { e.preventDefault(); go(idx - 1); }
+  });
+  var tx = null;
+  document.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 60) go(idx + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+
+  /* charts */
+  function base() {
+    if (!window.Chart) return false;
+    Chart.defaults.color = '#bdbdbd';
+    Chart.defaults.font.family = 'Manrope';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+    return true;
+  }
+  var RED = '#ff1f3d', GOLD = '#ffd400', CYAN = '#00f0ff', GRAY = '#555';
+
+  function buildCharts(s) {
+    if (!base()) return;
+    var canv = s.querySelectorAll('canvas');
+    canv.forEach(function (c) {
+      if (built[c.id]) { built[c.id].reset(); built[c.id].update(); return; }
+      var cfg = configs[c.id]; if (!cfg) return;
+      built[c.id] = new Chart(c, cfg());
+    });
+  }
+
+  var common = { responsive: true, maintainAspectRatio: false, animation: { duration: 1400, easing: 'easeOutQuart' }, plugins: { legend: { labels: { boxWidth: 12 } } } };
+  function merge(o) { return Object.assign({}, common, o); }
+
+  var configs = {
+    chartVs: function () { return { type: 'bar',
+      data: { labels: ['Сисадмин в штате', 'ПИНГ'], datasets: [{ label: 'тыс. ₽ в месяц', data: [140, 15], backgroundColor: [GRAY, GOLD], borderRadius: 10 }] },
+      options: merge({ plugins: { legend: { display: false }, title: { display: true, text: 'Стоимость в месяц, тыс. ₽ (офис на 10 мест)', color: '#fff' } }, scales: { y: { beginAtZero: true } } }) }; },
+    chartComp: function () { return { type: 'bar',
+      data: { labels: ['Sky Dynamics', '«Позитив»', 'ПИНГ', 'E-IT'], datasets: [{ data: [600, 700, 1500, 2000], backgroundColor: [GRAY, GRAY, RED, GRAY], borderRadius: 10 }] },
+      options: merge({ indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }) }; },
+    chartClients: function () { return { type: 'bar',
+      data: { labels: ['6 мес', '12 мес', '24 мес', '48 мес'], datasets: [{ label: 'Компаний на подписке', data: [5, 15, 40, 100], backgroundColor: [CYAN, CYAN, GOLD, RED], borderRadius: 10 }] },
+      options: merge({ plugins: { legend: { display: false }, title: { display: true, text: 'Компаний на подписке', color: '#fff' } }, scales: { y: { beginAtZero: true } } }) }; },
+    chartInvest: function () { return { type: 'doughnut',
+      data: { labels: ['Оборудование и ПО', 'Запчасти', 'Реклама и регистрация', 'Помещение', 'Резерв'], datasets: [{ data: [190, 60, 70, 250, 380], backgroundColor: [CYAN, '#7a7a7a', GOLD, '#b0001c', RED], borderWidth: 0 }] },
+      options: merge({ cutout: '62%', plugins: { legend: { position: 'bottom' } } }) }; },
+    chartGrowth: function () { return { type: 'line',
+      data: { labels: ['1', '3', '6', '9', '12', '15', '18', '21', '24'],
+        datasets: [
+          { label: 'Выручка', data: [80, 180, 300, 450, 600, 750, 880, 1000, 1120], borderColor: GOLD, backgroundColor: 'rgba(255,212,0,0.15)', fill: true, tension: .35, pointRadius: 3 },
+          { label: 'Расходы', data: [60, 120, 250, 500, 650, 750, 820, 870, 900], borderColor: RED, backgroundColor: 'transparent', tension: .35, pointRadius: 3, borderDash: [6, 4] }
+        ] },
+      options: merge({ scales: { x: { title: { display: true, text: 'месяц' } }, y: { beginAtZero: true } } }) }; },
+    chartCost: function () { return { type: 'doughnut',
+      data: { labels: ['Зарплаты и взносы', 'Аренда', 'Реклама', 'Транспорт, запчасти, связь, бухгалтерия'], datasets: [{ data: [670, 45, 60, 125], backgroundColor: [RED, CYAN, GOLD, '#666'], borderWidth: 0 }] },
+      options: merge({ cutout: '60%', plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Расходы в месяц, тыс. ₽', color: '#fff' } } }) }; }
+  };
+
+  go(0);
+  progress.style.width = (1 / slides.length * 100) + '%';
+})();
+</script>
+</body>
+</html>
