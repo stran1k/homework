@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Что важно знать ИП в первый год работы</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#1d2433;--muted:#5d6980;--soft:#eef2fa;--sh:0 6px 20px rgba(30,50,90,.08);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1523;--card:#18213a;--text:#eef2fb;--muted:#a3afc7;--soft:#232e4d;--sh:0 6px 20px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1523;--card:#18213a;--text:#eef2fb;--muted:#a3afc7;--soft:#232e4d;--sh:0 6px 20px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45;overflow:hidden}
+.bar{height:5px;background:rgba(120,130,160,.2);flex:none}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3b6ef5,#14b8a6);transition:width .3s}
+.stage{position:relative;flex:1;min-height:0}
+.slide{position:absolute;inset:0;padding:clamp(12px,3vw,32px) clamp(14px,5vw,60px);overflow-y:auto;opacity:0;visibility:hidden;transform:translateX(24px);transition:.35s}
+.slide.on{opacity:1;visibility:visible;transform:none}
+.wrap{max-width:1000px;margin:0 auto}
+.head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ic{flex:none;width:60px;height:60px;border-radius:18px;display:grid;place-items:center;font-size:32px;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:var(--sh)}
+.num{color:var(--a1);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+h1,h2{margin:0;line-height:1.15}h2{font-size:clamp(22px,4vw,36px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:var(--sh);border-top:5px solid var(--a1);font-size:clamp(14px,1.8vw,16px)}
+.card b{display:block;font-size:clamp(15px,2vw,18px);margin-bottom:4px}
+.bd{font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--a1);line-height:1.1;margin-bottom:4px}
+.tip{margin-top:14px;background:var(--soft);border-left:6px solid var(--a2);border-radius:12px;padding:12px 16px;font-size:clamp(14px,1.9vw,17px)}
+.hero{display:inline-flex;flex-direction:column;margin-bottom:12px;padding:10px 20px;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.hero b{font-size:clamp(26px,6vw,44px);line-height:1.1}.hero span{font-size:14px}
+.tl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.tb{border:0;border-radius:999px;padding:9px 15px;font-size:15px;cursor:pointer;background:var(--card);color:var(--text);box-shadow:var(--sh)}
+.tb.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-weight:600}
+.pn{display:none;background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:var(--sh);font-size:clamp(14px,1.9vw,17px)}.pn.on{display:block}
+.pn h3{margin:0 0 6px;color:var(--a1)}.pn ul{margin:6px 0 0;padding-left:20px}
+.yes{color:#16a34a;font-weight:600}.no{color:#e5484d;font-weight:600}
+details{background:var(--card);border-radius:14px;box-shadow:var(--sh);margin-bottom:10px;padding:12px 16px;font-size:clamp(14px,1.9vw,17px)}
+summary{cursor:pointer;font-weight:700;color:var(--a1)}details p{margin:8px 0 0}
+.calc{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.calc label{flex:1;min-width:200px;font-size:14px;color:var(--muted)}
+.calc input{display:block;width:100%;margin-top:4px;padding:10px 12px;font-size:18px;border-radius:12px;border:2px solid var(--a1);background:var(--card);color:var(--text)}
+.rw{background:var(--card);border-radius:14px;padding:12px 16px;box-shadow:var(--sh);margin-bottom:10px}
+.rl{display:flex;justify-content:space-between;gap:8px;font-size:clamp(14px,1.9vw,17px)}
+.rb{display:flex;height:14px;border-radius:7px;background:var(--soft);overflow:hidden;margin:6px 0 3px}
+.rb i{background:var(--a1)}.rb u{background:var(--a2)}small,.mt{color:var(--muted);font-size:13px}
+.ev{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:14px;padding:10px 14px;box-shadow:var(--sh);margin-bottom:8px;font-size:clamp(14px,1.9vw,16px)}
+.ev b{flex:none;min-width:84px;text-align:center;padding:6px 8px;border-radius:10px;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.ck{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:12px;padding:10px 14px;margin-bottom:8px;box-shadow:var(--sh);cursor:pointer;font-size:clamp(14px,1.9vw,17px)}
+.ck input{width:22px;height:22px;accent-color:var(--a1)}
+.pg{height:12px;border-radius:6px;background:var(--soft);overflow:hidden;margin:6px 0 12px}.pg i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .3s}
+.q{background:var(--card);border-radius:14px;padding:12px 16px;box-shadow:var(--sh);margin-bottom:10px}.q p{margin:0 0 8px;font-weight:700}
+.q button{display:block;width:100%;text-align:left;margin-top:6px;padding:9px 12px;font-size:15px;border:2px solid var(--soft);border-radius:10px;background:var(--bg);color:var(--text);cursor:pointer}
+.q button.ok{border-color:#16a34a;background:rgba(22,163,74,.18)}.q button.bad{border-color:#e5484d;background:rgba(229,72,77,.18)}
+.title{min-height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;align-items:center}
+.title .ic{width:100px;height:100px;font-size:54px;border-radius:30px;margin-bottom:16px}
+.title h1{font-size:clamp(28px,6vw,54px);max-width:820px}.title p{color:var(--muted);font-size:clamp(15px,2.4vw,20px);margin:10px 0 18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:820px}.chip{background:var(--card);padding:8px 14px;border-radius:999px;box-shadow:var(--sh);font-size:clamp(13px,1.9vw,16px)}
+.nav{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 12px;background:var(--card)}
+.nav button{border:0;border-radius:12px;padding:9px 20px;font-size:18px;cursor:pointer;background:#3b6ef5;color:#fff;font-weight:600}.nav button:disabled{opacity:.4}
+.dots{display:flex;gap:7px}.dots i{width:10px;height:10px;border-radius:50%;background:rgba(120,130,160,.4);cursor:pointer}.dots i.on{background:#3b6ef5;transform:scale(1.4)}
+</style>
+</head>
+<body>
+<div class="bar"><i id="p"></i></div>
+<div class="stage" id="stage"></div>
+<div class="nav"><button id="prev" aria-label="Назад">←</button><div class="dots" id="dots"></div><button id="next" aria-label="Вперёд">→</button></div>
+<script>
+function T(a){return '<div class="tabs"><div class="tl">'+a.map(function(x,i){return '<button class="tb'+(i?'':' on')+'">'+x[0]+'</button>'}).join('')+'</div>'+a.map(function(x,i){return '<div class="pn'+(i?'':' on')+'">'+x[1]+'</div>'}).join('')+'</div>'}
+function D(a){return a.map(function(x){return '<details><summary>'+x[0]+'</summary><p>'+x[1]+'</p></details>'}).join('')}
+function C(a){return '<div class="grid">'+a.map(function(x){return '<div class="card"><div class="bd">'+x[0]+'</div><b>'+x[1]+'</b>'+x[2]+'</div>'}).join('')+'</div>'}
+function E(a){return a.map(function(x){return '<div class="ev"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>'}).join('')}
+function tip(s){return '<div class="tip">💡 <b>Практический совет:</b> '+s+'</div>'}
+var CK=['Подал заявление Р21001 (Госуслуги, МФЦ или банк)','Получил лист записи ЕГРИП','Подал уведомление о переходе на УСН (до 30 дней)','Открыл расчётный счёт для бизнеса','Настроил кассу или приложение «Мой налог»','Поставил в календарь сроки отчётов и платежей','Начал платить страховые взносы частями','Завёл папку для договоров, чеков и КУДиР'];
+var Q=[['В течение скольких дней после регистрации нужно подать уведомление об УСН?',['7 дней','30 дней','90 дней'],1],['Нужно ли платить взносы ИП, если дохода не было?',['Нет, не нужно','Да, фиксированные платятся всегда'],1],['Какой годовой лимит дохода у самозанятого?',['600 тыс. ₽','2,4 млн ₽','10 млн ₽'],1],['До какого числа ИП на УСН сдаёт декларацию за прошлый год?',['25 апреля','1 января','28 июня'],0]];
+var S=[
+['🧾','Регистрация',['#3b6ef5','#14b8a6'],T([
+['1 Заявление','<h3>Подаём заявление Р21001</h3>Это одна форма в налоговую. Подать можно через Госуслуги, сайт ФНС, МФЦ или банк. Онлайн госпошлины нет, на бумаге она 800 ₽.<ul><li>нужен паспорт и ИНН</li><li>нужна электронная подпись или подтверждённая учётная запись</li></ul>'],
+['2 ОКВЭД','<h3>Выбираем виды деятельности</h3>Коды ОКВЭД показывают, чем вы занимаетесь. Один код основной, остальные дополнительные.<ul><li>вписывайте всё, что реально планируете делать</li><li>добавить код позже можно, но это лишняя бумага</li></ul>'],
+['3 Режим','<h3>Заявляем налоговый режим</h3>Уведомление об УСН подаётся вместе с заявлением или в течение 30 дней. Если не успеть, вы автоматически попадёте на общую систему (ОСНО), где налоги выше, а учёт сложнее.'],
+['4 Результат','<h3>Получаем запись в ЕГРИП</h3>Обычно за 3 рабочих дня. Вы получаете лист записи ЕГРИП: это документ, что вы теперь ИП. Налоговая сама передаёт сведения во внебюджетные фонды, отдельно регистрироваться там не нужно.']
+])+tip('подайте уведомление об УСН сразу вместе с регистрацией, чтобы про него не забыть.')],
+['⚖️','Выбор налогового режима',['#8b5cf6','#3b6ef5'],T([
+['УСН 6%','<h3>УСН «Доходы», 6%</h3>Налог со всей выручки. Региональная ставка может быть ниже.<ul><li class="yes">Простая бухгалтерия, налог уменьшают взносы</li><li class="no">Расходы не учитываются</li></ul>Подходит для услуг и бизнеса с малыми расходами.'],
+['УСН 15%','<h3>УСН «Доходы минус расходы», 15%</h3>Налог с разницы между доходами и расходами.<ul><li class="yes">Выгодно, когда расходы большие</li><li class="no">Нужны документы на каждый расход, минимальный налог 1% от доходов</li></ul>Подходит для торговли и производства.'],
+['НПД','<h3>НПД (самозанятый), 4% и 6%</h3>4% с доходов от граждан, 6% от компаний и ИП.<ul><li class="yes">Нет деклараций и обязательных взносов, чек в приложении</li><li class="no">Лимит 2,4 млн ₽ в год, нельзя нанимать работников, не для всех видов деятельности</li></ul>'],
+['Патент','<h3>Патентная система (ПСН)</h3>Вы покупаете патент на срок, и его цена известна заранее.<ul><li class="yes">Не нужна декларация по доходам</li><li class="no">Только для ряда видов деятельности и по региону</li></ul>'],
+['ОСНО','<h3>Общая система</h3>НДФЛ 13–15% и НДС. Это режим по умолчанию, если ничего не выбрать.<ul><li class="yes">Подходит, если клиенты хотят работать с НДС</li><li class="no">Самый сложный учёт и отчётность</li></ul>']
+])+tip('сравните режимы на своих цифрах, это можно сделать на следующем слайде.')],
+['🧮','Калькулятор: сколько платить',['#0ea5e9','#22c55e'],'<div class="calc"><label>Доход за год, ₽<input id="inc" type="number" value="1200000" min="0"></label><label>Расходы за год, ₽<input id="exp" type="number" value="300000" min="0"></label></div><div id="res"></div><p class="mt">Расчёт примерный: ИП без работников, взносы 2026 года (57 390 ₽ и 1% с дохода свыше 300 тыс. ₽). Для НПД взята ставка 4%.</p>'+tip('измените цифры и посмотрите, как меняется выгода. Чем больше расходов, тем интереснее УСН 15%.')],
+['💳','Касса и онлайн-платежи',['#f59e0b','#ef6c3a'],D([
+['🧾 Онлайн-касса и чек (54-ФЗ)','При расчёте наличными и картами нужен чек, данные автоматически уходят оператору фискальных данных. Чек выдаётся в момент оплаты. Штраф за его отсутствие для ИП: от четверти до половины суммы расчёта, но не менее 10 тыс. ₽.'],
+['📱 Самозанятые и исключения','Самозанятые не пользуются кассой: они формируют чек в приложении «Мой налог». Некоторые виды деятельности и отдалённые места тоже освобождены от кассы, это нужно проверять отдельно.'],
+['🔲 Эквайринг и СБП','Эквайринг это приём карт через банк, СБП это оплата по QR-коду или номеру телефона. За оба способа банк берёт комиссию, поэтому сравните тарифы разных банков.'],
+['🏦 Расчётный счёт','Для ИП он не обязателен, но отдельный счёт для бизнеса отделяет личные деньги от рабочих и упрощает учёт и налоговые платежи.']
+])+tip('перед открытием точки продаж проверьте, нужна ли вам касса именно по вашему виду деятельности.')],
+['📅','Отчётность: календарь ИП на УСН',['#0ea5e9','#6366f1'],E([
+['до 25 апр','Декларация по УСН за прошлый год. Сдаётся даже при нулевом доходе.'],
+['до 28 апр','Налог за прошлый год и аванс за 1 квартал.'],
+['до 1 июл','Взнос 1% с доходов свыше 300 тыс. ₽ за прошлый год.'],
+['до 28 июл и 28 окт','Авансы по УСН за 2 и 3 кварталы. До 25 числа подаётся уведомление.'],
+['до 31 дек','Фиксированные страховые взносы за текущий год.'],
+['весь год','Ведение книги учёта доходов (КУДиР). Её не сдают, но покажут по запросу. При наличии работников добавляются ЕФС-1, РСВ и 6-НДФЛ.']
+])+tip('перенесите все даты в календарь телефона и сдавайте отчёты через личный кабинет ИП, банк или онлайн-бухгалтерию.')],
+['🛡️','Страховые взносы',['#14b8a6','#22c55e'],'<div class="hero"><b>≈ 57,4 тыс. ₽ в год</b><span>фиксированные взносы «за себя» в 2026 году</span></div>'+C([
+['0 ₽ дохода','Платим всё равно','Взносы на пенсию и медицину нужно платить, пока вы ИП, даже без дохода.'],
+['+1%','С большого дохода','С суммы свыше 300 тыс. ₽ в год. Срок оплаты: до 1 июля следующего года.'],
+['📆','Первый год','Сумма считается пропорционально дням после регистрации.'],
+['−100%','Налог меньше','На УСН «Доходы» без работников налог уменьшается на уплаченные взносы.']])+'<div class="tip">📊 <b>Пример:</b> доход 1 000 000 ₽ на УСН 6%. Налог 60 000 ₽. Взносы: 57 390 + 1% с 700 000 = 64 390 ₽. Они полностью закрывают налог, и доплата равна 0 ₽.</div>'+tip('платите взносы частями в течение года, чтобы не собирать всю сумму в декабре.')],
+['⚠️','Риски и ответственность',['#ef4444','#f59e0b'],D([
+['🏠 Ответственность имуществом','ИП отвечает по долгам всем личным имуществом. Единственное жильё защищено законом, но не во всех случаях, например при залоге по ипотеке. Совет: не смешивайте бизнес-долги с личным имуществом, оценивайте риски договоров.'],
+['💸 Штрафы и пени','За несданную декларацию штраф 5% от налога за каждый месяц, но не менее 1 тыс. ₽. За долги начисляются пени, а налоговая может взыскать их со счёта. Совет: сдавайте отчёты в срок, даже нулевые.'],
+['🔒 Блокировка счёта','Банк может заблокировать счёт при подозрительных операциях, например частых переводах от физлиц без понятного основания. Совет: храните договоры и объясняйте происхождение платежей.'],
+['🔀 Смешение денег','Личные и бизнес-деньги на одной карте путают учёт и повышают риск проверок. Совет: заведите отдельный счёт и записывайте все расходы.']
+])+tip('перед крупной сделкой проконсультируйтесь с бухгалтером или юристом.')],
+['✅','Чек-лист первого года',['#16a34a','#14b8a6'],'<div class="pg"><i id="pgi"></i></div><div id="cks">'+CK.map(function(x){return '<label class="ck"><input type="checkbox">'+x+'</label>'}).join('')+'</div><p class="mt" id="pgt"></p>'],
+['🎯','Проверьте себя',['#8b5cf6','#ec4899'],Q.map(function(q,i){return '<div class="q" data-q="'+i+'"><p>'+(i+1)+'. '+q[0]+'</p>'+q[1].map(function(o,j){return '<button data-i="'+j+'">'+o+'</button>'}).join('')+'</div>'}).join('')+'<p class="tip" id="sc">Ответьте на все вопросы: результат появится здесь.</p>']
+];
+var h='<section class="slide" style="--a1:#3b6ef5;--a2:#14b8a6"><div class="title"><div class="ic">🚀</div><h1>Что важно знать ИП в первый год работы</h1><p>Листайте стрелками или свайпом. В презентации есть вкладки, калькулятор, чек-лист и мини-тест</p><div class="chips">'+S.map(function(s){return '<span class="chip">'+s[0]+' '+s[1]+'</span>'}).join('')+'</div></div></section>';
+S.forEach(function(s,k){h+='<section class="slide" style="--a1:'+s[2][0]+';--a2:'+s[2][1]+'"><div class="wrap"><div class="head"><div class="ic">'+s[0]+'</div><div><div class="num">Слайд '+(k+2)+' из '+(S.length+1)+'</div><h2>'+s[1]+'</h2></div></div>'+s[3]+'</div></section>'});
+var st=document.getElementById("stage");st.innerHTML=h;
+var sl=st.querySelectorAll(".slide"),n=sl.length,c=0,dt=document.getElementById("dots");
+dt.innerHTML=[].map.call(sl,function(){return '<i></i>'}).join('');
+function go(k){c=Math.max(0,Math.min(n-1,k));sl.forEach(function(e,j){e.classList.toggle("on",j===c)});[].forEach.call(dt.children,function(d,j){d.classList.toggle("on",j===c)});sl[c].scrollTop=0;document.getElementById("p").style.width=((c+1)/n*100)+"%";document.getElementById("prev").disabled=c===0;document.getElementById("next").disabled=c===n-1}
+function fmt(x){return Math.round(x).toLocaleString("ru-RU")}
+function calc(){var I=+document.getElementById("inc").value||0,E=+document.getElementById("exp").value||0,F=57390+Math.max(0,I-3e5)*.01;
+var r=[['УСН «Доходы» 6%',Math.max(0,I*.06-F),F],['УСН «Доходы − расходы» 15%',Math.max(Math.max(0,I-E-F)*.15,I*.01),F],['НПД 4%'+(I>2.4e6?' (лимит превышен!)':''),I*.04,0]];
+var m=Math.max.apply(0,r.map(function(x){return x[1]+x[2]}).concat(1)),b=Math.min.apply(0,r.map(function(x){return x[1]+x[2]}));
+document.getElementById("res").innerHTML=r.map(function(x){var t=x[1]+x[2];return '<div class="rw"><div class="rl"><span>'+x[0]+(t===b?' ✅':'')+'</span><b>'+fmt(t)+' ₽</b></div><div class="rb"><i style="width:'+x[1]/m*100+'%"></i><u style="width:'+x[2]/m*100+'%"></u></div><small>налог '+fmt(x[1])+' ₽ + взносы '+fmt(x[2])+' ₽</small></div>'}).join('')}
+var score=0,done=0;
+document.addEventListener("click",function(e){var t=e.target,b=t.closest(".tb");
+if(b){var w=b.closest(".tabs"),bs=[].slice.call(w.querySelectorAll(".tb")),ps=w.querySelectorAll(".pn"),k=bs.indexOf(b);bs.forEach(function(x,j){x.classList.toggle("on",j===k);ps[j].classList.toggle("on",j===k)})}
+var d=t.closest(".dots i");if(d)go([].indexOf.call(dt.children,d));
+var o=t.closest(".q button");if(o){var q=o.closest(".q");if(q.dataset.d)return;q.dataset.d=1;var cr=Q[+q.dataset.q][2],i=+o.dataset.i;q.querySelectorAll("button")[cr].classList.add("ok");if(i===cr)score++;else o.classList.add("bad");done++;
+if(done===Q.length)document.getElementById("sc").textContent="Результат: "+score+" из "+Q.length+(score===Q.length?". Отлично, вы готовы!":". Пересмотрите слайды, где ошиблись.")}});
+document.addEventListener("input",function(e){if(e.target.id==="inc"||e.target.id==="exp")calc();
+if(e.target.type==="checkbox"){var a=document.querySelectorAll("#cks input"),k=[].filter.call(a,function(x){return x.checked}).length;document.getElementById("pgi").style.width=k/a.length*100+"%";document.getElementById("pgt").textContent="Выполнено: "+k+" из "+a.length+(k===a.length?". Вы готовы к первому году!":"")}});
+document.getElementById("prev").onclick=function(){go(c-1)};document.getElementById("next").onclick=function(){go(c+1)};
+document.addEventListener("keydown",function(e){if(e.target.tagName==="INPUT")return;if(e.key==="ArrowRight"||e.key==="PageDown")go(c+1);else if(e.key==="ArrowLeft"||e.key==="PageUp")go(c-1)});
+var x0=null;st.addEventListener("touchstart",function(e){x0=e.touches[0].clientX},{passive:true});
+st.addEventListener("touchend",function(e){if(x0===null)return;var d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>70)go(d<0?c+1:c-1);x0=null});
+calc();go(0);
+</script>
+</body>
+</html>
