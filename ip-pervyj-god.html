@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ИП: первый год</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2d42; --muted:#6b6f85; --paper:#fffdfb;
+  --acc:#cdb9ff; --acc-soft:#efe9ff; --acc-ink:#5a3fb0;
+  --font:"Manrope","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{
+  font-family:var(--font); color:var(--ink);
+  background:
+    radial-gradient(900px 600px at 10% 10%, #eadfff 0%, transparent 60%),
+    radial-gradient(900px 600px at 95% 15%, #d9f3e6 0%, transparent 60%),
+    radial-gradient(900px 700px at 70% 100%, #ffe6d6 0%, transparent 60%),
+    #f6f2fb;
+}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{
+  position:relative;width:1280px;height:720px;flex:none;
+  background:var(--paper);border-radius:28px;overflow:hidden;
+  box-shadow:0 30px 80px rgba(60,40,120,.18),0 2px 0 rgba(255,255,255,.8) inset;
+  transform-origin:center center;
+}
+#stage::before,#stage::after{content:"";position:absolute;border-radius:50%;filter:blur(40px);opacity:.55;pointer-events:none;transition:background .6s}
+#stage::before{width:420px;height:420px;right:-120px;top:-140px;background:var(--acc)}
+#stage::after{width:360px;height:360px;left:-120px;bottom:-160px;background:var(--acc-soft)}
+
+/* HUD */
+.hud{position:absolute;top:18px;left:56px;right:56px;display:flex;align-items:center;gap:14px;z-index:6;font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.xp{flex:1;height:12px;border-radius:99px;background:rgba(43,45,66,.08);overflow:hidden}
+.xp i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--acc-ink));transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.lvl{padding:5px 12px;border-radius:99px;background:var(--acc-soft);color:var(--acc-ink);border:2px solid var(--acc);transition:all .5s;white-space:nowrap}
+
+/* Slides */
+.slide{position:absolute;inset:0;padding:58px 56px 60px;opacity:0;visibility:hidden;transform:translateX(36px);transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1),visibility 0s .5s;z-index:2}
+.slide.prev{transform:translateX(-36px)}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.slide[data-theme="0"]{--acc:#cdb9ff;--acc-soft:#efe9ff;--acc-ink:#5a3fb0}
+.slide[data-theme="1"]{--acc:#a9e6cf;--acc-soft:#e4f7ee;--acc-ink:#1f7a5a}
+.slide[data-theme="2"]{--acc:#b6d4ff;--acc-soft:#e6f0ff;--acc-ink:#2a5fa8}
+.slide[data-theme="3"]{--acc:#ffcfb0;--acc-soft:#ffeadd;--acc-ink:#a8541a}
+.slide[data-theme="4"]{--acc:#ffe28f;--acc-soft:#fff5d0;--acc-ink:#7d6200}
+.slide[data-theme="5"]{--acc:#ffc2d8;--acc-soft:#ffe6ef;--acc-ink:#ab3466}
+.slide[data-theme="6"]{--acc:#ffbfb8;--acc-soft:#ffe5e1;--acc-ink:#ad342b}
+
+.r{opacity:0}
+.slide.active .r{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*90ms + 160ms)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.kicker{margin-top:14px;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-ink)}
+h2{margin:6px 0 18px;font-size:36px;line-height:1.12;font-weight:800;max-width:780px;letter-spacing:-.01em}
+.main{width:772px}
+
+/* Sections (plain, not cards) */
+.sec{margin:0 0 12px}
+.sec h3{margin:0 0 6px;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-ink);display:flex;align-items:center;gap:8px}
+.sec h3 span.ic{font-size:17px;letter-spacing:0}
+.sec.risk h3{color:#b0372f}
+ul.l{list-style:none;margin:0;padding:0}
+ul.l li{position:relative;padding-left:20px;margin:0 0 6px;font-size:16.5px;line-height:1.38}
+ul.l li::before{content:"";position:absolute;left:3px;top:.62em;width:8px;height:8px;border-radius:3px;background:var(--acc-ink);opacity:.8;transform:rotate(45deg)}
+.risk ul.l li::before{background:#d8574d}
+ul.l b{font-weight:800}
+.hl{background:linear-gradient(transparent 60%,var(--acc) 60%);padding:0 2px}
+
+/* Advice block: same place, same size on every content slide */
+.advice{position:absolute;right:56px;top:150px;width:360px;height:440px;z-index:3;
+  background:var(--acc-soft);border:3px solid var(--acc);border-radius:24px;padding:22px 24px;
+  display:flex;flex-direction:column;gap:12px;transition:background .5s,border-color .5s}
+.advice .label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-ink)}
+.advice .label .ic{font-size:26px;letter-spacing:0;display:inline-block;animation:bob 3s ease-in-out infinite}
+.advice h4{margin:6px 0 0;font-size:24px;line-height:1.2;font-weight:800}
+.advice p{margin:0;font-size:18px;line-height:1.5}
+.advice .foot{margin-top:auto;font-size:12.5px;color:var(--muted);font-weight:600}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
+
+/* Memes */
+.meme{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--acc);border-radius:16px;overflow:hidden;margin-top:10px;background:var(--acc-soft)}
+.meme.one{grid-template-columns:1fr}
+.meme .cell{padding:9px 14px;font-size:14.5px;line-height:1.32;display:flex;gap:10px;align-items:center}
+.meme .cell+.cell{border-left:2px dashed var(--acc)}
+.meme .e{font-size:30px;line-height:1;flex:none;transition:transform .25s}
+.meme:hover .e{transform:rotate(-10deg) scale(1.18)}
+.meme b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:1px}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.35}
+
+/* Tables */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;line-height:1.3;border:2px solid var(--acc);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--acc);color:var(--ink);text-align:left;padding:8px 10px;font-size:12px;letter-spacing:.07em;text-transform:uppercase}
+.tbl td{padding:8px 10px;vertical-align:top;border-top:1px solid rgba(43,45,66,.08)}
+.tbl tr:nth-child(even) td{background:rgba(255,255,255,.55)}
+.tbl td:first-child{font-weight:800}
+
+/* Timeline rows */
+.tl{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.tl .row{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.35}
+.tl .d{flex:none;width:132px;text-align:center;font-weight:800;font-size:13.5px;padding:6px 8px;border-radius:10px;background:var(--acc);color:var(--ink)}
+
+/* Calculator */
+.calc{display:flex;gap:14px;align-items:center;border:2px dashed var(--acc);border-radius:14px;padding:10px 14px;background:#fff}
+.calc label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--acc-ink);display:block;margin-bottom:4px}
+.calc input{font:inherit;font-weight:800;font-size:18px;width:170px;padding:6px 10px;border-radius:10px;border:2px solid var(--acc);background:var(--acc-soft);color:var(--ink);outline:none}
+.calc input:focus{border-color:var(--acc-ink)}
+.calc .out{font-size:14.5px;line-height:1.45}
+.calc .out b{font-size:18px}
+
+/* Title */
+.title-slide{display:flex;flex-direction:column;justify-content:center}
+.title-slide h1{font-size:64px;line-height:1.05;margin:14px 0 14px;font-weight:800;letter-spacing:-.02em;max-width:900px}
+.title-slide .sub{font-size:24px;color:var(--muted);font-weight:600;margin-bottom:26px}
+.pill{display:inline-block;padding:7px 16px;border-radius:99px;background:var(--acc-soft);border:2px solid var(--acc);color:var(--acc-ink);font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.start{display:inline-flex;align-items:center;gap:10px;margin-top:6px;font-weight:800;font-size:18px;color:var(--acc-ink)}
+.start kbd{font:inherit;font-size:14px;padding:4px 10px;border-radius:8px;border:2px solid var(--acc);background:#fff;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.float{position:absolute;font-size:54px;opacity:.9;animation:drift 7s ease-in-out infinite;z-index:1}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-18px) rotate(6deg)}}
+
+/* Plan */
+.plan{display:grid;grid-template-columns:1fr 1fr;gap:14px 34px;margin:6px 0 18px;max-width:1120px}
+.plan .it{display:flex;gap:14px;align-items:center}
+.plan .n{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:20px;background:var(--acc);color:var(--ink)}
+.plan .t{font-size:21px;font-weight:800;line-height:1.15}
+.plan .a{font-size:14px;color:var(--muted);font-weight:600}
+
+/* Final */
+.badges{display:flex;flex-direction:column;gap:9px;width:772px}
+.badge{display:flex;align-items:center;gap:14px;padding:9px 14px;border-radius:14px;border:2px solid var(--acc);background:var(--acc-soft);transition:filter .4s,opacity .4s}
+.badge .bi{font-size:28px;flex:none}
+.badge .bt{font-weight:800;font-size:17px;line-height:1.2}
+.badge .bs{font-size:13.5px;color:var(--muted);font-weight:600}
+.badge.locked{filter:grayscale(1);opacity:.55;background:#f2f2f2;border-color:#ccc}
+.badge .bx{margin-left:auto;font-size:13px;font-weight:800;color:var(--acc-ink)}
+.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.check li{display:flex;gap:10px;font-size:15.5px;line-height:1.32;font-weight:600}
+.check li::before{content:"✔";flex:none;width:22px;height:22px;border-radius:7px;background:var(--acc);color:var(--ink);display:grid;place-items:center;font-size:13px;font-weight:800;margin-top:1px}
+
+/* Sources */
+.src{columns:2;column-gap:36px;font-size:14px;line-height:1.35;margin:0;padding:0;list-style:none;max-width:1160px}
+.src li{break-inside:avoid;margin-bottom:9px}
+.src a{color:var(--acc-ink);font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--acc)}
+.src span{display:block;color:var(--muted);font-size:12.5px;word-break:break-all}
+
+/* Toast */
+.toast{position:absolute;right:56px;top:44px;width:360px;z-index:20;display:flex;gap:12px;align-items:center;padding:10px 16px;border-radius:16px;background:#fff;border:3px solid var(--acc);box-shadow:0 14px 34px rgba(60,40,120,.2);transform:translateY(-130px);opacity:0;transition:transform .55s cubic-bezier(.2,1.2,.3,1),opacity .3s}
+.toast.show{transform:none;opacity:1}
+.toast .ti{font-size:32px}
+.toast .tk{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-ink)}
+.toast .tt{font-size:17px;font-weight:800;line-height:1.15}
+.toast .ts{font-size:12.5px;color:var(--muted);font-weight:600}
+
+/* Nav */
+.nav{position:absolute;left:56px;right:56px;bottom:16px;display:flex;align-items:center;justify-content:space-between;z-index:6;font-size:13px;color:var(--muted);font-weight:700}
+.nav .btns{display:flex;gap:8px;align-items:center}
+.nav button{font:inherit;font-weight:800;border:2px solid var(--acc);background:#fff;color:var(--acc-ink);border-radius:12px;width:40px;height:34px;cursor:pointer;transition:transform .15s,background .2s}
+.nav button:hover{transform:translateY(-2px);background:var(--acc-soft)}
+.dots{display:flex;gap:6px;margin:0 10px}
+.dots i{width:8px;height:8px;border-radius:50%;background:rgba(43,45,66,.15);transition:all .3s;cursor:pointer}
+.dots i.on{background:var(--acc-ink);width:22px;border-radius:6px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .r{opacity:1}
+}
+@media print{
+  @page{size:1280px 720px;margin:0}
+  html,body{overflow:visible;height:auto;background:#fff}
+  #viewport{position:static;display:block}
+  #stage{transform:none!important;width:1280px;height:auto;box-shadow:none;border-radius:0;overflow:visible}
+  #stage::before,#stage::after,.hud,.nav,.toast,.float{display:none}
+  .slide{position:relative;display:block;opacity:1;visibility:visible;transform:none;height:720px;page-break-after:always}
+  .r{opacity:1!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div id="viewport">
+<div id="stage">
+
+  <div class="hud"><span>XP</span><div class="xp"><i id="xp"></i></div><span class="lvl" id="lvl">Старт</span></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="ti" id="toastI">🏆</div>
+    <div><div class="tk">Достижение получено</div><div class="tt" id="toastT"></div><div class="ts" id="toastS"></div></div>
+  </div>
+
+  <!-- 1. TITLE -->
+  <section class="slide title-slide" data-theme="0" data-level="0">
+    <span class="float" style="right:120px;top:120px;animation-delay:0s">🧾</span>
+    <span class="float" style="right:300px;top:300px;font-size:44px;animation-delay:1.2s">📅</span>
+    <span class="float" style="right:90px;top:390px;font-size:60px;animation-delay:2.1s">💼</span>
+    <span class="float" style="right:380px;top:520px;font-size:40px;animation-delay:.6s">⚠️</span>
+    <div class="r" style="--i:0"><span class="pill">ИП · первый год</span></div>
+    <h1 class="r" style="--i:1">Что надо знать ИП в первый год работы</h1>
+    <div class="sub r" style="--i:2">Пока налоговая не написала первой</div>
+    <div class="r" style="--i:3;max-width:640px">
+      <div class="meme">
+        <div class="cell"><span class="e">😎</span><div><b>Ожидание</b>Открою ИП и сразу заработаю</div></div>
+        <div class="cell"><span class="e">📚</span><div><b>Реальность</b>Сначала откроешь Налоговый кодекс</div></div>
+      </div>
+    </div>
+    <div class="start r" style="--i:4;margin-top:22px"><kbd>→</kbd> нажми стрелку или пробел, чтобы начать</div>
+  </section>
+
+  <!-- 2. PLAN -->
+  <section class="slide" data-theme="0" data-level="0">
+    <div class="kicker r" style="--i:0">Карта прохождения</div>
+    <h2 class="r" style="--i:1">Шесть уровней — и ты знаешь, как не потерять нервы и деньги</h2>
+    <div class="plan">
+      <div class="it r" style="--i:2"><div class="n">1</div><div><div class="t">Регистрация</div><div class="a">Достижение: «Первый шаг»</div></div></div>
+      <div class="it r" style="--i:3"><div class="n">2</div><div><div class="t">Налоговый режим</div><div class="a">Достижение: «Режим выбран»</div></div></div>
+      <div class="it r" style="--i:4"><div class="n">3</div><div><div class="t">Касса и онлайн-платежи</div><div class="a">Достижение: «Чек пробит»</div></div></div>
+      <div class="it r" style="--i:5"><div class="n">4</div><div><div class="t">Отчётность</div><div class="a">Достижение: «Дедлайн не пропущен»</div></div></div>
+      <div class="it r" style="--i:6"><div class="n">5</div><div><div class="t">Страховые взносы</div><div class="a">Достижение: «Взносы закрыты»</div></div></div>
+      <div class="it r" style="--i:7"><div class="n">6</div><div><div class="t">Риски и ответственность</div><div class="a">Достижение: «Налоговая не страшна»</div></div></div>
+    </div>
+    <div class="r" style="--i:8;max-width:900px;font-size:17px;line-height:1.5">
+      На каждом слайде: <b>правила</b> и <b>опасности</b> слева, <b>«Совет бывалого»</b> всегда справа. Внизу — мем, чтобы не уснуть. Цифры и сроки проверены по состоянию на <b>25 ноября 2026</b>.
+    </div>
+    <div class="r" style="--i:9;max-width:640px;margin-top:14px">
+      <div class="meme one"><div class="cell"><span class="e">🧠</span><div><b>Налоговая не кусается</b>Но читает очень внимательно</div></div></div>
+    </div>
+  </section>
+
+  <!-- 3. L1 REGISTRATION -->
+  <section class="slide" data-theme="1" data-level="1" data-ach-ico="🏁" data-ach="Первый шаг" data-ach-sub="ИП открыт, коды ОКВЭД выбраны">
+    <div class="kicker r" style="--i:0">Уровень 1 из 6 · Регистрация</div>
+    <h2 class="r" style="--i:1">Открываем ИП: быстро, бесплатно и без очередей</h2>
+    <div class="main">
+      <div class="sec r" style="--i:2">
+        <h3><span class="ic">📜</span>Правила</h3>
+        <ul class="l">
+          <li>Заявление подают онлайн (личный кабинет ФНС, Госуслуги, банк) или через МФЦ. <b>Онлайн госпошлины нет</b>, на бумаге — 800 ₽.</li>
+          <li>Регистрация занимает <b>до 3 рабочих дней</b> после подачи полного пакета. Итог — запись в ЕГРИП.</li>
+          <li>Выбираешь основной ОКВЭД и дополнительные. Позже коды меняют заявлением по форме Р24001 в течение 7 рабочих дней после начала новой деятельности, без пошлины.</li>
+        </ul>
+      </div>
+      <div class="sec risk r" style="--i:3">
+        <h3><span class="ic">⚠️</span>Опасность</h3>
+        <ul class="l">
+          <li>Ошибка в данных или в заявлении — отказ и подача заново. Проверяй паспортные данные, адрес и коды дважды.</li>
+          <li>Не все могут быть ИП: например, нельзя госслужащим и военнослужащим.</li>
+        </ul>
+      </div>
+      <div class="r" style="--i:4">
+        <div class="meme">
+          <div class="cell"><span class="e">⚡</span><div><b>Ожидание</b>«ИП открывается за 5 минут»</div></div>
+          <div class="cell"><span class="e">⏳</span><div><b>Реальность</b>Подал за вечер, ждёшь до 3 рабочих дней</div></div>
+        </div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Бери коды ОКВЭД с запасом</h4>
+      <p>Добавь все направления, которые реально планируешь. Дописать коды позже можно (форма Р24001), но лишняя бумажная возня тебе ни к чему.</p>
+      <div class="foot">Уровень 1 · Регистрация</div>
+    </aside>
+  </section>
+
+  <!-- 4. L2a MODES TABLE -->
+  <section class="slide" data-theme="2" data-level="2">
+    <div class="kicker r" style="--i:0">Уровень 2 из 6 · Налоговый режим (1/2)</div>
+    <h2 class="r" style="--i:1">Налоговые режимы: коротко и по делу</h2>
+    <div class="main">
+      <div class="r" style="--i:2">
+        <table class="tbl">
+          <thead><tr><th style="width:150px">Режим</th><th style="width:210px">Налог</th><th style="width:230px">Лимит в 2026 году</th><th>Взносы за себя</th></tr></thead>
+          <tbody>
+            <tr><td>НПД (самозанятость)</td><td>4% с доходов от физлиц, 6% от компаний и ИП</td><td>2,4 млн ₽ в год, без наёмных работников</td><td>Не платит</td></tr>
+            <tr><td>Патент (ПСН)</td><td>Фиксированная стоимость патента (зависит от региона и вида деятельности)</td><td>20 млн ₽ (дальше 15 млн и 10 млн)</td><td>Платит</td></tr>
+            <tr><td>УСН «Доходы»</td><td>6% (в регионах бывают льготные ставки)</td><td>490,5 млн ₽; НДС — при доходе выше 20 млн ₽</td><td>Платит, налог уменьшается на взносы</td></tr>
+            <tr><td>УСН «Доходы − расходы»</td><td>15%</td><td>Как у УСН «Доходы»</td><td>Платит</td></tr>
+            <tr><td>ОСНО</td><td>НДФЛ 13–22% и НДС</td><td>Без лимита</td><td>Платит</td></tr>
+          </tbody>
+        </table>
+        <div class="note">Есть ещё АУСН: 8% с доходов или 20% с разницы, доход до 60 млн ₽, взносы за себя не платят.</div>
+      </div>
+      <div class="r" style="--i:3">
+        <div class="meme one"><div class="cell"><span class="e">🎯</span><div><b>Выбрал режим «на глаз»</b>Через год: «А почему налог такой?»</div></div></div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Начни с вопроса: сколько и с кем?</h4>
+      <p>Работаешь один и зарабатываешь до 2,4 млн ₽ в год — самозанятость проще всего. Растёшь, нанимаешь людей или считаешь расходы — смотри на УСН.</p>
+      <div class="foot">Уровень 2 · Налоговый режим</div>
+    </aside>
+  </section>
+
+  <!-- 5. L2b TRAPS -->
+  <section class="slide" data-theme="2" data-level="2" data-ach-ico="🧭" data-ach="Режим выбран" data-ach-sub="Лимиты и ловушки 2026 учтены">
+    <div class="kicker r" style="--i:0">Уровень 2 из 6 · Налоговый режим (2/2)</div>
+    <h2 class="r" style="--i:1">Ловушки режимов в 2026 году</h2>
+    <div class="main">
+      <div class="sec r" style="--i:2">
+        <h3><span class="ic">📜</span>Правила</h3>
+        <ul class="l">
+          <li>Новый ИП подаёт уведомление о переходе на УСН <b>в течение 30 календарных дней</b> после регистрации. Не успел — работаешь на ОСНО.</li>
+          <li>Совмещаешь УСН и патент — доходы по обоим режимам складываются для лимита ПСН.</li>
+        </ul>
+      </div>
+      <div class="sec risk r" style="--i:3">
+        <h3><span class="ic">⚠️</span>Опасности</h3>
+        <ul class="l">
+          <li><b>НДС на УСН.</b> Доход выше 20 млн ₽ (за 2025 год или в течение 2026-го) — платишь НДС: 22% или пониженная ставка 5% при доходе до 272,5 млн ₽. Лимит дальше снижается: 15 млн в 2027 году и 10 млн в 2028-м.</li>
+          <li><b>Патент.</b> Больше 20 млн ₽ — право на ПСН пропадает задним числом, налоги пересчитывают.</li>
+          <li><b>НПД.</b> Больше 2,4 млн ₽ в год — право на режим теряется.</li>
+        </ul>
+      </div>
+      <div class="r" style="--i:4">
+        <div class="meme">
+          <div class="cell"><span class="e">🙂</span><div><b>УСН, лимит 20 млн</b>«Я до него не дорасту»</div></div>
+          <div class="cell"><span class="e">😅</span><div><b>Бизнес через год</b>«Привет, НДС»</div></div>
+        </div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Посчитай до того, как выбирать</h4>
+      <p>Прикинь налог на каждом режиме на своих цифрах. Ориентир: «Доходы − расходы» выигрывает, когда расходы больше примерно 60% дохода. И не забудь про 30 дней на уведомление.</p>
+      <div class="foot">Уровень 2 · Налоговый режим</div>
+    </aside>
+  </section>
+
+  <!-- 6. L3 CASH REGISTER -->
+  <section class="slide" data-theme="3" data-level="3" data-ach-ico="🧾" data-ach="Чек пробит" data-ach-sub="Ты знаешь, нужна ли тебе касса">
+    <div class="kicker r" style="--i:0">Уровень 3 из 6 · Касса и онлайн-платежи</div>
+    <h2 class="r" style="--i:1">Касса: нужна ли она тебе вообще</h2>
+    <div class="main">
+      <div class="sec r" style="--i:2">
+        <h3><span class="ic">📜</span>Правила</h3>
+        <ul class="l">
+          <li>Чек нужен при расчётах с покупателями-физлицами, в том числе при оплате по QR-коду и через СБП. Безналичные расчёты между компаниями и ИП кассы не требуют.</li>
+          <li><b>Без кассы можно:</b> самозанятым на НПД (чеки в приложении «Мой налог»), ИП на патенте по перечню видов деятельности, в труднодоступных местностях.</li>
+          <li>Комплект: касса из реестра ФНС, фискальный накопитель, договор с ОФД и регистрация в налоговой.</li>
+        </ul>
+      </div>
+      <div class="sec risk r" style="--i:3">
+        <h3><span class="ic">⚠️</span>Опасности</h3>
+        <ul class="l">
+          <li><b>Нет кассы, хотя нужна:</b> штраф ИП от 25 до 50% суммы расчёта, минимум 10 000 ₽. Повторно при суммах от 1 млн ₽ — приостановка деятельности до 90 суток.</li>
+          <li>Непробитый чек, нет ОФД, ошибка в чеке: от 1 500 до 3 000 ₽ (иногда хватает предупреждения).</li>
+        </ul>
+      </div>
+      <div class="r" style="--i:4">
+        <div class="meme">
+          <div class="cell"><span class="e">🤝</span><div><b>Оплата на личную карту</b>«Это же по-дружески»</div></div>
+          <div class="cell"><span class="e">🧐</span><div><b>Налоговая</b>«Мы тоже за дружбу. И за чеки»</div></div>
+        </div>
+        <div class="note">Законопроект о повышении штрафов по ст. 14.5 КоАП прошёл первое чтение в феврале 2026 года — проверь действующую редакцию.</div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Сначала выясни, потом покупай</h4>
+      <p>Проверь, обязан ли ты применять кассу: самозанятым она не нужна. Если нужна — собери комплект и зарегистрируй кассу до первой продажи.</p>
+      <div class="foot">Уровень 3 · Касса и онлайн-платежи</div>
+    </aside>
+  </section>
+
+  <!-- 7. L4 REPORTING -->
+  <section class="slide" data-theme="4" data-level="4" data-ach-ico="📅" data-ach="Дедлайн не пропущен" data-ach-sub="Даты в календаре, напоминания включены">
+    <div class="kicker r" style="--i:0">Уровень 4 из 6 · Отчётность</div>
+    <h2 class="r" style="--i:1">Отчётность ИП на УСН: четыре пункта в календарь</h2>
+    <div class="main">
+      <div class="sec r" style="--i:2">
+        <h3><span class="ic">📜</span>Правила</h3>
+        <div class="tl">
+          <div class="row"><div class="d">25 апреля</div><div>Декларация по УСН за прошлый год. Выходной — срок переносится на рабочий день (в 2026 году это было 27 апреля).</div></div>
+          <div class="row"><div class="d">25 апр · июл · окт</div><div>Уведомление об исчисленных налогах — до того, как платить аванс.</div></div>
+          <div class="row"><div class="d">28 апр · июл · окт</div><div>Авансовый платёж по УСН за квартал. Налог за год — тоже до 28 апреля.</div></div>
+          <div class="row"><div class="d">Весь год</div><div>КУДиР — книга учёта доходов. В налоговую её не сдают, но покажешь по запросу.</div></div>
+        </div>
+        <div class="note" style="margin-top:0">НПД: отчётности нет. ОСНО: 3-НДФЛ до 30 апреля и НДС каждый квартал. С сотрудниками отчётов гораздо больше.</div>
+      </div>
+      <div class="sec risk r" style="--i:3">
+        <h3><span class="ic">⚠️</span>Опасность</h3>
+        <ul class="l">
+          <li>Опоздал с декларацией: штраф <b>5% от суммы налога за каждый месяц просрочки</b> (минимум 1 000 ₽, максимум 30%). Даже если платить нечего — минимум 1 000 ₽.</li>
+        </ul>
+      </div>
+      <div class="r" style="--i:4">
+        <div class="meme">
+          <div class="cell"><span class="e">🧠</span><div><b>Мозг</b>«До 25-го ещё куча времени»</div></div>
+          <div class="cell"><span class="e">📆</span><div><b>Календарь</b>«Сегодня 24-е»</div></div>
+        </div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Пусть календарь помнит за тебя</h4>
+      <p>Поставь напоминания на 25-е и 28-е числа за три дня до срока. Сдавай отчёты через личный кабинет ИП заранее, а не вечером в последний день.</p>
+      <div class="foot">Уровень 4 · Отчётность</div>
+    </aside>
+  </section>
+
+  <!-- 8. L5 CONTRIBUTIONS -->
+  <section class="slide" data-theme="5" data-level="5" data-ach-ico="💰" data-ach="Взносы закрыты" data-ach-sub="Фикс плюс 1% посчитаны">
+    <div class="kicker r" style="--i:0">Уровень 5 из 6 · Страховые взносы</div>
+    <h2 class="r" style="--i:1">Взносы: платишь, даже если дохода нет</h2>
+    <div class="main">
+      <div class="sec r" style="--i:2">
+        <h3><span class="ic">📜</span>Правила</h3>
+        <ul class="l">
+          <li>Фиксированная часть за 2026 год — <b>57 390 ₽</b>. Срок: до 28 декабря 2026.</li>
+          <li>Плюс <b>1% с дохода сверх 300 000 ₽</b> — до 1 июля следующего года. Потолок допвзноса за 2026 год — 321 818 ₽.</li>
+          <li>На УСН «Доходы» без сотрудников налог можно уменьшить на взносы на 100%, с сотрудниками — не более чем на 50%.</li>
+          <li>На НПД и АУСН эти взносы не платят.</li>
+        </ul>
+      </div>
+      <div class="sec risk r" style="--i:3">
+        <h3><span class="ic">⚠️</span>Опасность</h3>
+        <ul class="l">
+          <li>Правило «нет дохода — нет взносов» не работает: фиксированная часть обязательна для ИП, даже если ты ничего не заработал.</li>
+        </ul>
+      </div>
+      <div class="r" style="--i:4">
+        <div class="calc">
+          <div>
+            <label for="inc">Доход за 2026 год, ₽</label>
+            <input id="inc" type="number" inputmode="numeric" min="0" step="10000" value="1000000">
+          </div>
+          <div class="out" id="calcOut"></div>
+        </div>
+        <div class="note">Для УСН «Доходы − расходы» и ОСНО в расчёт берут доход за вычетом расходов.</div>
+      </div>
+      <div class="r" style="--i:5">
+        <div class="meme one"><div class="cell"><span class="e">🙃</span><div><b>«Доходов нет, взносов нет»</b>57 390 ₽: «Привет, я всё равно здесь»</div></div></div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Не копи взносы на декабрь</h4>
+      <p>Плати частями в течение года: на УСН «Доходы» без сотрудников они уменьшают налог на 100%, и авансы получаются меньше. Заведи отдельную «копилку» на налоги и взносы.</p>
+      <div class="foot">Уровень 5 · Страховые взносы</div>
+    </aside>
+  </section>
+
+  <!-- 9. L6 RISKS -->
+  <section class="slide" data-theme="6" data-level="6" data-ach-ico="🛡️" data-ach="Налоговая не страшна" data-ach-sub="Риски известны, значит, управляемы">
+    <div class="kicker r" style="--i:0">Уровень 6 из 6 · Риски и ответственность</div>
+    <h2 class="r" style="--i:1">Что бывает, если расслабиться</h2>
+    <div class="main">
+      <div class="r" style="--i:2">
+        <table class="tbl">
+          <thead><tr><th style="width:190px">Что случилось</th><th>Чем это грозит</th></tr></thead>
+          <tbody>
+            <tr><td>Не сдал декларацию</td><td>Штраф 5% от налога за месяц (минимум 1 000 ₽, максимум 30%). Через 20 рабочих дней после срока налоговая вправе заблокировать счёт.</td></tr>
+            <tr><td>Не заплатил налог или взносы</td><td>Пени за каждый день просрочки и штраф 20% от неуплаченной суммы (при умысле — 40%).</td></tr>
+            <tr><td>Работал без нужной кассы</td><td>Штраф от 25 до 50% суммы расчётов (минимум 10 000 ₽), при повторе — приостановка до 90 суток.</td></tr>
+            <tr><td>Превысил лимит режима</td><td>Потеря права на режим и пересчёт налогов (на УСН — ещё и НДС).</td></tr>
+            <tr><td>Долги бизнеса</td><td>ИП отвечает по ним всем своим имуществом: границы между личным и бизнесом нет.</td></tr>
+          </tbody>
+        </table>
+        <div class="note">Блокировку снимают не позднее следующего рабочего дня после подачи отчёта.</div>
+      </div>
+      <div class="r" style="--i:3">
+        <div class="meme">
+          <div class="cell"><span class="e">💳</span><div><b>Личные деньги и деньги ИП</b>На одной карте</div></div>
+          <div class="cell"><span class="e">🔍</span><div><b>При проверке</b>«Ну что, давайте разбираться»</div></div>
+        </div>
+      </div>
+    </div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📜</span>Совет бывалого</div>
+      <h4>Раздели деньги и храни бумаги</h4>
+      <p>Заведи отдельный счёт для бизнеса, веди КУДиР и храни документы. Заметил ошибку — исправь сам: уточнённая декларация и доплата до проверки часто спасают от штрафа.</p>
+      <div class="foot">Уровень 6 · Риски и ответственность</div>
+    </aside>
+  </section>
+
+  <!-- 10. FINAL -->
+  <section class="slide" data-theme="0" data-level="0" data-final="1">
+    <div class="kicker r" style="--i:0">Финал</div>
+    <h2 class="r" style="--i:1">Прохождение завершено! <span id="score" style="color:var(--acc-ink)"></span></h2>
+    <div class="badges" id="badges"></div>
+    <aside class="advice r" style="--i:3">
+      <div class="label"><span class="ic">📋</span>Чек-лист на холодильник</div>
+      <ul class="check">
+        <li>ОКВЭД бери с запасом</li>
+        <li>Режим выбирай по своим цифрам, а не «на глаз»</li>
+        <li>Проверь, нужна ли тебе касса, до первой продажи</li>
+        <li>Поставь напоминания на 25-е и 28-е числа</li>
+        <li>Взносы плати частями, а не в декабре</li>
+        <li>Раздели личные и бизнес-деньги, храни документы</li>
+      </ul>
+      <div class="foot">Налоговая теперь не страшная, а просто внимательная.</div>
+    </aside>
+  </section>
+
+  <!-- 11. SOURCES -->
+  <section class="slide" data-theme="0" data-level="0">
+    <div class="kicker r" style="--i:0">Источники</div>
+    <h2 class="r" style="--i:1">Откуда цифры (проверено 25.11.2026)</h2>
+    <ul class="src r" style="--i:2">
+      <li><a href="https://www.nalog.gov.ru/rn48/news/activities_fts/16591469/" target="_blank" rel="noopener">ФНС России: патентная система в 2026 году</a><span>nalog.gov.ru/rn48/news/activities_fts/16591469/</span></li>
+      <li><a href="https://kontur.ru/elba/spravka/55378-straxovye_vznosy_ip_gajd_po_oplate_i_raschetam" target="_blank" rel="noopener">Контур.Эльба: страховые взносы ИП в 2026 году</a><span>kontur.ru/elba/spravka/55378-…</span></li>
+      <li><a href="https://glavkniga.ru/elver/2026/8/8275" target="_blank" rel="noopener">Главная книга: расчёт 1%-х взносов ИП с 2026 года</a><span>glavkniga.ru/elver/2026/8/8275</span></li>
+      <li><a href="https://www.moedelo.org/club/article-knowledge/limit-dohodov-na-usn-2026" target="_blank" rel="noopener">Моё дело: лимит дохода на УСН и НДС в 2026 году</a><span>moedelo.org/club/article-knowledge/limit-dohodov-na-usn-2026</span></li>
+      <li><a href="https://kontur.ru/articles/37713-novoe_v_zakonah_dlya_samozanyatyh" target="_blank" rel="noopener">Контур: самозанятые в 2026 году (ставки, лимит 2,4 млн ₽)</a><span>kontur.ru/articles/37713-…</span></li>
+      <li><a href="https://kontur.ru/market/spravka/37760-onlayn_kassa_dlya_ip" target="_blank" rel="noopener">Контур.Маркет: онлайн-касса для ИП</a><span>kontur.ru/market/spravka/37760-onlayn_kassa_dlya_ip</span></li>
+      <li><a href="https://tochka.com/knowledge/acquiring/narusheniya-po-onlajn-kassam/" target="_blank" rel="noopener">Точка: штрафы за нарушения по онлайн-кассам</a><span>tochka.com/knowledge/acquiring/narusheniya-po-onlajn-kassam/</span></li>
+      <li><a href="https://kontur.ru/elba/spravka/51755-ip_na_usn_bez_sotrudnikov" target="_blank" rel="noopener">Контур.Эльба: отчётность ИП на УСН без сотрудников</a><span>kontur.ru/elba/spravka/51755-ip_na_usn_bez_sotrudnikov</span></li>
+      <li><a href="https://www.klerk.ru/blogs/klerk365/654296" target="_blank" rel="noopener">Клерк: штрафы за просрочку деклараций (ст. 119 НК РФ)</a><span>klerk.ru/blogs/klerk365/654296</span></li>
+      <li><a href="https://rulaws.ru/nk-rf-chast-1/Razdel-IV/Glava-11/Statya-76" target="_blank" rel="noopener">НК РФ, статья 76: приостановление операций по счетам</a><span>rulaws.ru/nk-rf-chast-1/Razdel-IV/Glava-11/Statya-76</span></li>
+      <li><a href="https://ru.themoscowtimes.com/2026/02/12/gosduma-odobrila-zakonoproekt-o-pyatikratnom-uvelichenii-shtrafov-magazinam-za-rabotu-bez-onlain-kass-a187057" target="_blank" rel="noopener">The Moscow Times: законопроект о штрафах за кассы (1-е чтение)</a><span>ru.themoscowtimes.com/2026/02/12/…</span></li>
+    </ul>
+    <div class="note r" style="--i:3;max-width:1100px;margin-top:10px;font-size:13.5px">Презентация носит информационный характер и не заменяет консультацию бухгалтера или юриста. Законы и лимиты меняются — перед решением сверяйся с действующей редакцией Налогового кодекса и сайтом ФНС.</div>
+  </section>
+
+  <div class="nav">
+    <div id="counter">1 / 11 · листай ← →, полный экран — F</div>
+    <div class="btns"><button id="prev" aria-label="Назад">‹</button><div class="dots" id="dots"></div><button id="next" aria-label="Вперёд">›</button></div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var N = slides.length, idx = 0;
+  var xp = document.getElementById('xp'), lvl = document.getElementById('lvl');
+  var counter = document.getElementById('counter');
+  var dots = document.getElementById('dots');
+  var toast = document.getElementById('toast'), toastT;
+  var earned = {}; // slide index -> true
+
+  // achievements list from slides
+  var ach = [];
+  slides.forEach(function(s,i){ if(s.dataset.ach){ ach.push({i:i,ico:s.dataset.achIco,t:s.dataset.ach,s:s.dataset.achSub}); } });
+
+  // dots
+  slides.forEach(function(_,i){ var d=document.createElement('i'); d.addEventListener('click',function(e){e.stopPropagation();go(i)}); dots.appendChild(d); });
+
+  function fit(){
+    var s = Math.min(window.innerWidth/1280, window.innerHeight/720);
+    stage.style.transform = 'scale('+s+')';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  function money(n){ return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + '\u00a0₽'; }
+
+  function renderFinal(){
+    var box = document.getElementById('badges'); box.innerHTML='';
+    var got = 0;
+    ach.forEach(function(a,k){
+      var ok = !!earned[a.i]; if(ok) got++;
+      var el = document.createElement('div');
+      el.className = 'badge r' + (ok?'':' locked');
+      el.style.setProperty('--i', k+2);
+      el.innerHTML = '<span class="bi">'+(ok?a.ico:'🔒')+'</span><div><div class="bt">'+a.t+'</div><div class="bs">'+(ok?a.s:'Пройди уровень, чтобы открыть')+'</div></div><span class="bx">'+(ok?'ПОЛУЧЕНО':'ЗАКРЫТО')+'</span>';
+      box.appendChild(el);
+    });
+    document.getElementById('score').textContent = '(' + got + ' из ' + ach.length + ')';
+  }
+
+  function showToast(a){
+    document.getElementById('toastI').textContent = a.ico;
+    document.getElementById('toastT').textContent = a.t;
+    document.getElementById('toastS').textContent = a.s;
+    var th = slides[a.i].dataset.theme;
+    var cs = getComputedStyle(slides[a.i]);
+    toast.style.setProperty('--acc', cs.getPropertyValue('--acc'));
+    toast.style.setProperty('--acc-ink', cs.getPropertyValue('--acc-ink'));
+    toast.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(function(){ toast.classList.remove('show'); }, 3600);
+  }
+
+  function go(n){
+    n = Math.max(0, Math.min(N-1, n));
+    if(n === idx && slides[idx].classList.contains('active')) return;
+    var forward = n >= idx;
+    slides.forEach(function(s,i){
+      s.classList.remove('active','prev');
+      if(i < n) s.classList.add('prev');
+    });
+    idx = n;
+    var cur = slides[idx];
+    // progress & level
+    xp.style.width = (idx/(N-1)*100) + '%';
+    var L = +cur.dataset.level;
+    lvl.textContent = L ? ('Уровень ' + L + ' из 6') : (idx===0 ? 'Старт' : (cur.dataset.final ? 'Финал' : 'Инфо'));
+    // theme colors for HUD / nav / stage glow
+    var cs = getComputedStyle(cur);
+    ['--acc','--acc-soft','--acc-ink'].forEach(function(v){ stage.style.setProperty(v, cs.getPropertyValue(v)); });
+    // achievements
+    if(cur.dataset.ach){
+      var a = ach.filter(function(x){return x.i===idx})[0];
+      earned[idx] = true;
+      if(forward) setTimeout(function(){ if(slides[idx]===cur) showToast(a); }, 700);
+    }
+    if(cur.dataset.final) renderFinal();
+    cur.classList.add('active');
+    // dots & counter
+    Array.prototype.forEach.call(dots.children, function(d,i){ d.classList.toggle('on', i===idx); });
+    counter.textContent = (idx+1) + ' / ' + N + ' · листай ← →, полный экран — F';
+    try{ history.replaceState(null,'','#'+(idx+1)); }catch(e){}
+  }
+  function next(){ go(idx+1); } function prev(){ go(idx-1); }
+
+  document.getElementById('next').addEventListener('click', function(e){e.stopPropagation();next()});
+  document.getElementById('prev').addEventListener('click', function(e){e.stopPropagation();prev()});
+
+  document.addEventListener('keydown', function(e){
+    if(e.target && e.target.tagName === 'INPUT') return;
+    var k = e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){ e.preventDefault(); next(); }
+    else if(k==='ArrowLeft'||k==='PageUp'||k==='Backspace'){ e.preventDefault(); prev(); }
+    else if(k==='Home'){ go(0); } else if(k==='End'){ go(N-1); }
+    else if(k==='f'||k==='F'||k==='а'||k==='А'){
+      if(!document.fullscreenElement){ document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); }
+      else { document.exitFullscreen && document.exitFullscreen(); }
+    }
+  });
+
+  // click: right part = next, left part = back
+  stage.addEventListener('click', function(e){
+    if(e.target.closest('a,button,input,label,.calc,.dots')) return;
+    var r = stage.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width;
+    if(x < .25) prev(); else next();
+  });
+
+  // swipe
+  var tx=null;
+  stage.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; }, {passive:true});
+  stage.addEventListener('touchend', function(e){
+    if(tx===null) return; var dx = e.changedTouches[0].clientX - tx; tx=null;
+    if(Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+  }, {passive:true});
+
+  // calculator
+  var inc = document.getElementById('inc'), out = document.getElementById('calcOut');
+  function calc(){
+    var v = Math.max(0, parseFloat(inc.value) || 0);
+    var fix = 57390;
+    var extra = Math.min(Math.max(0, v - 300000) * 0.01, 321818);
+    out.innerHTML = 'Фиксированная часть: <b>' + money(fix) + '</b><br>1% сверх 300\u00a0000\u00a0₽: <b>' + money(extra) + '</b><br>Итого за год: <b>' + money(fix+extra) + '</b>';
+  }
+  inc.addEventListener('input', calc); calc();
+
+  // init from hash
+  var h = parseInt((location.hash||'').replace('#',''),10);
+  go(isNaN(h) ? 0 : Math.max(0, Math.min(N-1, h-1)));
+  // if started from hash, mark achievements of earlier slides as seen
+  ach.forEach(function(a){ if(a.i < idx) earned[a.i] = true; });
+  if(slides[idx].dataset.final) renderFinal();
+})();
+</script>
+</body>
+</html>
